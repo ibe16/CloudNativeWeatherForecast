@@ -1,0 +1,32 @@
+# Usamos como base la iamgen slim (debian) con python 3.6 instalado
+FROM python:3.6-slim
+
+# Encargado de mantener el contenedor
+LABEL maintainer="Irene Béjar <irenebejar@correo.ugr.es>"
+
+# Copiamos solo los archivos locales necesarios para el funcionamiento del microservicio al contenedor
+# Este miicroservicio usa un método del otro microservicio, concretamente el que invoca a Celery
+COPY ./src/*.py /src/
+COPY ./requirements.txt /src/
+
+# Nos colocamos en la raíz para poder ejecutar el microservicio
+WORKDIR /src
+
+# Definimos las variables de entorno
+ENV FORECAST_URL=${FORECAST_URL}
+ENV MONGO_URI=${MONGO_URI}
+
+# Instalamos sólo las dependencias necesarias, sin usar el requirements.txt
+RUN apt-get update -y
+RUN pip install -r requirements.txt
+
+# Indicamos el puerto en el que se escucha el microservicio.
+EXPOSE 8080
+
+# Creamos un usuario sin permisos de administrador para ejecutar el servidor
+# Esto se hace por seguridad
+# RUN useradd -m normaluser
+# USER normaluser
+
+# Levantamos el microservicio con Gunicorn
+CMD gunicorn --workers=1 -b 0.0.0.0:8080 Api_V1:app

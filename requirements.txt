@@ -1,0 +1,8 @@
+pymongo==3.10.1
+pandas==0.25.3
+statsmodels==0.11.1
+pmdarima==1.5.3
+Flask==1.1.1
+gunicorn==19.10.0
+requests==2.23.0
+ 
