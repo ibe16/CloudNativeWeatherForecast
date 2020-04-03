@@ -15,21 +15,6 @@ class WeatherForecast:
 
     def __init__(self):
         self.data = load_from_database()
-        # path1="/tmp/workflow/humidity.csv"
-        # path2="/tmp/workflow/temperature.csv"
-        # data_humidity = pd.read_csv(path1, header=0)
-        # data_temperature = pd.read_csv(path2, header=0)
-        
-        # data_humidity = data_humidity[["datetime", "San Francisco"]]
-        # data_humidity= data_humidity.rename(columns={'San Francisco': 'SFHumidity'})
-
-        # data_temperature = data_temperature[["datetime", "San Francisco"]]
-        # data_temperature = data_temperature.rename(columns={'San Francisco': 'SFTemperature'})
-
-        # data = pd.merge(data_temperature, data_humidity, on='datetime')
-        # data = data.dropna()
-        # data.reset_index(inplace=True)
-
         self.data = self.data.head(1000)
 
     def create_model(self):
@@ -105,16 +90,16 @@ class WeatherForecast:
         print(result)
         return result
 
-if __name__ == "__main__":
-    wf = WeatherForecast()
-    #wf.create_model()
-    # wf.save_model()
-    wf.load_model()
-    wf.make_forecast_from_model(24)
-    wf.make_forecast_from_model(48)
-    wf.make_forecast_from_model(72)
-    wf.make_forescast_from_api(24)
-    wf.make_forescast_from_api(48)
-    wf.make_forescast_from_api(72)
+# if __name__ == "__main__":
+#     wf = WeatherForecast()
+#     #wf.create_model()
+#     # wf.save_model()
+#     wf.load_model()
+#     wf.make_forecast_from_model(24)
+#     wf.make_forecast_from_model(48)
+#     wf.make_forecast_from_model(72)
+#     wf.make_forescast_from_api(24)
+#     wf.make_forescast_from_api(48)
+#     wf.make_forescast_from_api(72)
 
     
