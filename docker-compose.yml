@@ -18,7 +18,7 @@ services:
       - "8081:8081"
     environment: 
       FORECAST_URL: ${FORECAST_URL}
-      MONGO_URI: ${MONGO_URI}
+      MONGO_URI: ${MONGO_URI_DOCKER}
     depends_on: 
       - mongodb
 
