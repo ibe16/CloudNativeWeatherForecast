@@ -14,10 +14,16 @@ class WeatherForecast:
     """Clase para realizar predicciones sobre el tiempo"""
 
     def __init__(self):
+        """ Constructor de la clase.
+            Carga el dataframe de la base de datos y elige las 1000 primeras filas"""
+
         self.data = load_from_database()
         self.data = self.data.head(1000)
 
     def create_model(self):
+        """ Entrena los modelos de ARIMA para temperatura y humedad """
+        
+        # Modelo para humedad
         self.model_humidity = pm.auto_arima(self.data['SFHumidity'], start_p=1, start_q=1,
         test='adf', 
         max_p=3, max_q=3,
@@ -31,6 +37,7 @@ class WeatherForecast:
         suppress_warnings=True,
         stepwise=True)
 
+        # Modelo para temperatura
         self.model_temperature = pm.auto_arima(self.data['SFTemperature'], start_p=1, start_q=1,
         test='adf', 
         max_p=3, max_q=3,
@@ -45,9 +52,13 @@ class WeatherForecast:
         stepwise=True)
 
     def save_model(self):
+        """ Guarda los modelos en ficheros en el directorio actual usando Pickle """
+
+        # Fichero para el modelo de humedad
         with open("model_humidity.pickle", 'wb') as f:
             pickle.dump(self.model_humidity, f, pickle.HIGHEST_PROTOCOL)
 
+        # Fichero para el modelo de temperatura
         with open("model_temperature.pickle", 'wb') as f:
             pickle.dump(self.model_temperature, f, pickle.HIGHEST_PROTOCOL)
 
@@ -58,10 +69,16 @@ class WeatherForecast:
         with open("./models/model_temperature.pickle", 'rb') as f:
             self.model_temperature = pickle.load(f)
 
+
     def make_forecast_from_model(self, periods):
+        """ Hace una predicción de la temperatura y humedad usando los modelos de ARIMA
+            Recibe como argumento el periodo de tiempo para el que se quiere hacer predicciones
+            Devuelve un diccionario con los datos"""
+
         fc_temp, confint = self.model_temperature.predict(n_periods=periods, return_conf_int=True)
         fc_hum, confint = self.model_humidity.predict(n_periods=periods, return_conf_int=True)
 
+        # Diccionario que contiene la temperatura y la humedad
         result = {"hours" : periods,
                   "temperature" : fc_temp[periods-1], 
                   "humidity" : fc_hum[periods-1]}
@@ -69,7 +86,12 @@ class WeatherForecast:
         print(result)
         return result
 
+
     def make_forecast_from_api(self, periods):
+        """ Hace una prediccion usando una API externa
+            Recibe como argumento el periodo de tiempo para el que se quiere hacer predicciones
+            Devuelve un diccionario con los datos """
+            
         response = requests.get(url=URL)
         data = response.json()
  
