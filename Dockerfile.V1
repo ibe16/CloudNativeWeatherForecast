@@ -29,4 +29,6 @@ EXPOSE 8080
 # USER normaluser
 
 # Levantamos el microservicio con Gunicorn
+# --workers --> workers de Gunicorn que se van a usar
+# -b --> dirección donde va a escuchar el servidor
 CMD gunicorn --workers=1 -b 0.0.0.0:8080 Api_V1:app

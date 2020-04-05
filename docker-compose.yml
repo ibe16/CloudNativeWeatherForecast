@@ -1,27 +1,45 @@
 version: '3.7'
+
+# servicios que se despliegan
 services:
+  # Base de datos de mongoDB
   mongodb:
+    # Imagen que se va a usar para construir el contenedor
     image: mongo:latest
+    # Variables de entorno necesarias para el contendor
     environment:
+      # Usuario root, se ha dejado el por defecto
       MONGO_INITDB_ROOT_USERNAME: root
+      # Contraseña del usuario
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    # Puerto por el que poder comunicarse desde el exterior del contendor 27017
     ports:
       - 27017:27017
+    # Puerto que al que se conectan los contenedores de la red
     expose: 
       - "27017"
 
+  # Versión 2 de la API
   api_v2:
+    # El contendor se construirá en el directorio donde se ejecute docker-compose
+    # usando el Dockerfile que se indica
     build: 
       context: .
       dockerfile: Dockerfile.V2
+    # Puerto por el que poder comunicarse desde el exterior del contendor 8081
     ports:
       - "8081:8081"
+    # Varables de entorno necesarias
     environment: 
+      # URL de la API de The Weather Company
       FORECAST_URL: ${FORECAST_URL}
+      # URI del contenedor de la base de datos
       MONGO_URI: ${MONGO_URI_DOCKER}
+    # Depende de que la BD esté desplegada
     depends_on: 
       - mongodb
 
+  # Versión 1 de la API
   api_v1:
     build: 
       context: .
